@@ -34,16 +34,19 @@ module.exports = (app) => {
         check('email', 'O email é inválido.').notEmpty().isEmail(),
     ],
     (req, res) => {
-        let errors = validationResult(req);
+
+        console.log(req.body)
+
+        let errors = validationResult(req, res);
 
         if(!errors.isEmpty()){
             app.utils.error.send(errors, req, res);
             return false;
         }
 
-        db.insert(req.body, (err, user)=>{
+        db.insert(req.body, (err, user, req)=>{
             if(err){
-                app.utils.error.send(err, res, req);
+                app.utils.error.send(errors, res, req);
             }
             else{
                 res.status(200).json(user);
